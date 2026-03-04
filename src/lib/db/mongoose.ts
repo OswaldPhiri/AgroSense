@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI?.trim();
 
-if (!MONGODB_URI) {
-    throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+if (!MONGODB_URI || MONGODB_URI === 'your_mongodb_atlas_connection_string' || MONGODB_URI.includes('your_mongodb')) {
+    if (process.env.NODE_ENV === 'development') {
+        console.warn('⚠️ MONGODB_URI is not set or using placeholder. Database features are disabled.');
+    }
 }
 
 /**

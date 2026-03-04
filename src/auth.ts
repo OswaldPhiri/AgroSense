@@ -3,8 +3,12 @@ import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import clientPromise from '@/lib/db/clientPromise';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
+const isDbConfigured = !!(process.env.MONGODB_URI &&
+    process.env.MONGODB_URI.trim() !== '' &&
+    !process.env.MONGODB_URI.includes('your_mongodb'));
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
-    adapter: MongoDBAdapter(clientPromise),
+    adapter: isDbConfigured ? MongoDBAdapter(clientPromise) : undefined,
     providers: [
         CredentialsProvider({
             name: 'Credentials',
