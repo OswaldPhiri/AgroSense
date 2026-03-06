@@ -19,7 +19,6 @@ export default function RegisterPage() {
         setError(null);
 
         // MOCK registration for MVP
-        // In a real application, you would've hit a /api/register route
         setTimeout(() => {
             setLoading(false);
             router.push('/login');
@@ -27,33 +26,33 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4 selection:bg-green-500/30">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-green-500/5 via-transparent to-transparent -z-10" />
+        <div className="min-h-screen bg-gray-50 text-gray-900 flex items-center justify-center p-4">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-green-100 via-transparent to-transparent -z-10 opacity-50" />
 
             <div className="w-full max-w-md">
                 <Link href="/" className="flex items-center justify-center gap-2 mb-12 group">
-                    <Sprout className="w-10 h-10 text-green-400 group-hover:scale-110 transition-transform" />
-                    <span className="text-3xl font-black tracking-tighter">AgroSense</span>
+                    <Sprout className="w-10 h-10 text-green-600 group-hover:scale-110 transition-transform" />
+                    <span className="text-3xl font-black tracking-tighter text-gray-900">AgroSense</span>
                 </Link>
 
-                <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 p-8 rounded-3xl shadow-2xl">
+                <div className="bg-white border border-gray-200 p-8 rounded-3xl shadow-xl">
                     <div className="mb-8">
-                        <h1 className="text-2xl font-bold mb-2">Create Account</h1>
-                        <p className="text-slate-400 text-sm">Join the future of agricultural intelligence.</p>
+                        <h1 className="text-2xl font-bold mb-2 text-gray-900">Create Account</h1>
+                        <p className="text-gray-500 text-sm">Join the future of agricultural intelligence.</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2 ml-1">
+                            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2 ml-1">
                                 Full Name
                             </label>
                             <div className="relative group">
-                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-green-400 transition-colors" />
+                                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-green-600 transition-colors" />
                                 <input
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="w-full bg-slate-950 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-slate-700 focus:outline-none focus:border-green-500/50 transition-all"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-4 pl-12 pr-4 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/10 transition-all"
                                     placeholder="John Doe"
                                     required
                                 />
@@ -61,16 +60,16 @@ export default function RegisterPage() {
                         </div>
 
                         <div>
-                            <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2 ml-1">
+                            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2 ml-1">
                                 Email Address
                             </label>
                             <div className="relative group">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-green-400 transition-colors" />
+                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-green-600 transition-colors" />
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full bg-slate-950 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-slate-700 focus:outline-none focus:border-green-500/50 transition-all"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-4 pl-12 pr-4 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/10 transition-all"
                                     placeholder="name@example.com"
                                     required
                                 />
@@ -78,16 +77,16 @@ export default function RegisterPage() {
                         </div>
 
                         <div>
-                            <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2 ml-1">
+                            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2 ml-1">
                                 Password
                             </label>
                             <div className="relative group">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-green-400 transition-colors" />
+                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-green-600 transition-colors" />
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full bg-slate-950 border border-white/5 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-slate-700 focus:outline-none focus:border-green-500/50 transition-all"
+                                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-4 pl-12 pr-4 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/10 transition-all"
                                     placeholder="••••••••"
                                     required
                                 />
@@ -95,7 +94,7 @@ export default function RegisterPage() {
                         </div>
 
                         {error && (
-                            <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-sm animate-fade-in">
+                            <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-600 text-sm animate-fade-in">
                                 {error}
                             </div>
                         )}
@@ -103,7 +102,7 @@ export default function RegisterPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-green-500 hover:bg-green-400 disabled:bg-slate-800 disabled:text-slate-500 text-slate-950 font-black py-4 rounded-2xl transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+                            className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-bold py-4 rounded-2xl transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 shadow-lg shadow-green-600/20"
                         >
                             {loading ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -116,10 +115,10 @@ export default function RegisterPage() {
                         </button>
                     </form>
 
-                    <div className="mt-8 pt-8 border-t border-white/5 text-center">
-                        <p className="text-slate-500 text-sm">
+                    <div className="mt-8 pt-8 border-t border-gray-100 text-center">
+                        <p className="text-gray-500 text-sm">
                             Already have an account?{' '}
-                            <Link href="/login" className="text-green-400 font-bold hover:text-green-300 transition-colors">
+                            <Link href="/login" className="text-green-600 font-bold hover:text-green-700 transition-colors">
                                 Sign In
                             </Link>
                         </p>
