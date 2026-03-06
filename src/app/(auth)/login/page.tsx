@@ -20,12 +20,13 @@ export default function LoginPage() {
             const result = await signIn('credentials', {
                 email,
                 password,
-                callbackUrl: '/dashboard',
-                redirect: true,
+                redirect: false,
             });
 
             if (result?.error) {
                 setError('Invalid email or password. For demo use admin@agrosense.ai / password123');
+            } else {
+                window.location.href = '/dashboard';
             }
         } catch (err) {
             setError('An unexpected error occurred. Please check your DB connection.');
