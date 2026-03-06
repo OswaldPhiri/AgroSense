@@ -29,11 +29,11 @@ export async function POST(request: NextRequest) {
 
         let recommendation: AIRecommendationResponse;
 
-        if (!aiApiKey || aiApiKey === 'your_ai_api_key') {
+        if (!aiApiKey) {
             // Fallback for demo purposes if API key is not set
             recommendation = {
                 risk_level: 'moderate',
-                summary: `Farming advice for ${crops.join(', ')} in ${location}.`,
+                summary: `Farming advice for ${crops.join(', ')} in ${location}. (Demo Mode)`,
                 recommendations: [
                     'Monitor soil moisture due to current temperature.',
                     'Consider supplemental irrigation if rainfall remains low.',
@@ -86,11 +86,19 @@ export async function POST(request: NextRequest) {
             });
 
             if (!response.ok) {
-                throw new Error('AI service failed');
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(`AI service failed: ${response.status} ${JSON.stringify(errorData)}`);
             }
 
             const aiData = await response.json();
-            recommendation = JSON.parse(aiData.choices[0].message.content);
+            const content = aiData.choices[0].message.content;
+
+            try {
+                recommendation = JSON.parse(content);
+            } catch (parseError) {
+                console.error('Failed to parse AI response:', content);
+                throw new Error('AI returned invalid JSON format');
+            }
         }
 
         // Log the recommendation to MongoDB
