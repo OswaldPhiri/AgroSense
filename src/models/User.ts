@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface IUser extends Document {
     name?: string;
     email: string;
+    password?: string;
     image?: string;
     location_lat?: number;
     location_lng?: number;
@@ -17,6 +18,7 @@ const UserSchema: Schema = new Schema(
     {
         name: { type: String },
         email: { type: String, required: true, unique: true },
+        password: { type: String },
         image: { type: String },
         location_lat: { type: Number },
         location_lng: { type: Number },
@@ -26,6 +28,7 @@ const UserSchema: Schema = new Schema(
             enum: ['free', 'premium'],
             default: 'free'
         },
+
         crops: [{ type: Schema.Types.ObjectId, ref: 'Crop' }],
     },
     { timestamps: true }
