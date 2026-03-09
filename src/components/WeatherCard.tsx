@@ -55,7 +55,7 @@ export default function WeatherCard({ data }: WeatherCardProps) {
             </div>
 
             <p className="mt-4 text-[10px] text-green-200 text-right uppercase tracking-widest">
-                Updated: {data.observation_time}
+                Updated: {new Date(data.observation_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </p>
         </div>
     );

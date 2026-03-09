@@ -50,12 +50,12 @@ export async function GET(request: NextRequest) {
         // Normalize the data
         const normalizedData: WeatherData = {
             temperature: data.current.temperature,
-            rainfall_probability: data.current.precip > 0 ? 100 : 0, // WeatherStack free tier doesn't always provide prob
+            rainfall_probability: data.current.precip > 0 ? 100 : 0,
             humidity: data.current.humidity,
             wind_speed: data.current.wind_speed,
             forecast_summary: data.current.weather_descriptions[0],
             location: `${data.location.name}, ${data.location.region}, ${data.location.country}`,
-            observation_time: data.current.observation_time,
+            observation_time: data.location.localtime, // Use local time instead of UTC observation time
         };
 
         return NextResponse.json(normalizedData);
