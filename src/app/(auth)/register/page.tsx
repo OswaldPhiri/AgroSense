@@ -19,11 +19,36 @@ export default function RegisterPage() {
         setLoading(true);
         setError(null);
 
-        // MOCK registration for MVP
-        setTimeout(() => {
+        try {
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Failed to create account');
+            }
+
+            // Immediately login the user upon successful registration
+            const signInResult = await signIn('credentials', {
+                email,
+                password,
+                redirect: false,
+            });
+
+            if (signInResult?.error) {
+                // If auto-login fails, redirect to login page
+                router.push('/login');
+            } else {
+                // Success: go straight to dashboard
+                window.location.href = '/dashboard';
+            }
+        } catch (err: any) {
+            setError(err.message || 'An unexpected error occurred. Please try again.');
             setLoading(false);
-            router.push('/login');
-        }, 1500);
+        }
     };
 
     return (

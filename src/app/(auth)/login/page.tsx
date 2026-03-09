@@ -24,7 +24,7 @@ export default function LoginPage() {
             });
 
             if (result?.error) {
-                setError('Invalid email or password. Try admin@agrosense.ai / password123');
+                setError('Invalid email or password. Please try again.');
             } else {
                 window.location.href = '/dashboard';
             }
@@ -135,13 +135,6 @@ export default function LoginPage() {
                             </Link>
                         </p>
                     </div>
-                </div>
-
-                <div className="mt-8 text-center bg-green-50 border border-green-200 p-4 rounded-2xl">
-                    <p className="text-green-700 text-xs font-bold tracking-tight">
-                        DEMO CREDENTIALS:<br />
-                        Email: <span className="text-gray-900">admin@agrosense.ai</span> | Pass: <span className="text-gray-900">password123</span>
-                    </p>
                 </div>
             </div>
         </div>

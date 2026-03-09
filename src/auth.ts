@@ -25,11 +25,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) return null;
 
-                // Allow the demo mock login for MVP testing
-                if (credentials.email === 'admin@agrosense.ai' && credentials.password === 'password123') {
-                    return { id: 'demo123', name: 'Demo Farmer', email: 'admin@agrosense.ai' };
-                }
-
                 try {
                     await dbConnect();
 
