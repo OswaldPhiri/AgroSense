@@ -1,5 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
+import dbConnect from '@/lib/db/mongoose';
+import ChatMessage from '@/models/ChatMessage';
+
+export async function GET(req: NextRequest) {
+    try {
+        const session = await auth();
+        if (!session || !session.user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        await dbConnect();
+
+        const userId = session.user.id || (session.user as any).sub;
+
+        // Fetch last 50 messages to keep UI performant
+        const messages = await ChatMessage.find({ user_id: userId })
+            .sort({ createdAt: 1 })
+            .limit(50);
+
+        return NextResponse.json({ messages });
+    } catch (error: any) {
+        console.error('Chat History Fetch Error:', error);
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    }
+}
 
 export async function POST(req: NextRequest) {
     try {
@@ -20,6 +45,19 @@ export async function POST(req: NextRequest) {
 
         if (!aiApiKey) {
             return NextResponse.json({ error: 'AI API key not configured' }, { status: 500 });
+        }
+
+        await dbConnect();
+        const userId = session.user.id || (session.user as any).sub;
+
+        // Save the latest user message to DB if it's new
+        const lastUserMessage = messages[messages.length - 1];
+        if (lastUserMessage && lastUserMessage.role === 'user') {
+            await ChatMessage.create({
+                user_id: userId,
+                role: 'user',
+                content: lastUserMessage.content
+            });
         }
 
         const systemMessage = {
@@ -46,7 +84,7 @@ ${context?.language === 'ny' ? 'IMPORTANT: You MUST respond entirely in Chichewa
             body: JSON.stringify({
                 model: aiModel,
                 messages: [systemMessage, ...messages],
-                stream: false, // For simplicity in MVP, disable streaming. Can upgrade to Next.js AI SDK streams later.
+                stream: false,
             }),
         });
 
@@ -58,6 +96,15 @@ ${context?.language === 'ny' ? 'IMPORTANT: You MUST respond entirely in Chichewa
 
         const aiData = await response.json();
         const reply = aiData.choices[0]?.message || { role: 'assistant', content: 'Sorry, I could not generate a response.' };
+
+        // Save AI response to DB
+        if (reply && reply.content) {
+            await ChatMessage.create({
+                user_id: userId,
+                role: 'assistant',
+                content: reply.content
+            });
+        }
 
         return NextResponse.json({ message: reply });
 

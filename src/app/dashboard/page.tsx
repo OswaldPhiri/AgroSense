@@ -44,7 +44,7 @@ export default function DashboardPage() {
         ? session.user.name.split(' ').map(n => n[0]).join('').toUpperCase()
         : 'US';
 
-    async function fetchLanguagePreferences() {
+    async function fetchUserPreferences() {
         try {
             const res = await fetch('/api/user/preferences');
             if (res.ok) {
@@ -53,48 +53,74 @@ export default function DashboardPage() {
                 if (!data.languagePromptAnswered) {
                     setShowLanguagePrompt(true);
                 }
+                if (data.location) {
+                    setUserLocation(data.location);
+                    fetchAdvisory(data.location);
+                } else {
+                    // Only try to auto-locate if no saved location
+                    getUserGeolocation();
+                }
             }
         } catch (err) {
-            console.error('Failed to fetch language preferences', err);
+            console.error('Failed to fetch user preferences', err);
+            getUserGeolocation(); // Fallback to auto-locate
         }
     }
 
     async function getUserGeolocation() {
+        if (isLocating) return;
         setIsLocating(true);
         if ('geolocation' in navigator) {
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
-                    // Format for Weather API query
                     const query = `${lat},${lon}`;
                     setUserLocation(query);
                     setIsLocating(false);
                     fetchAdvisory(query);
+
+                    // Save this detected location as default
+                    saveLocation(query);
                 },
                 (error) => {
                     console.error('Error getting location:', error);
-                    // Fallback Location
-                    setUserLocation('Lusaka, Zambia');
                     setIsLocating(false);
-                    fetchAdvisory('Lusaka, Zambia');
+                    // Don't auto-fallback to Lusaka, let weather API or user handle it
+                    if (!userLocation) {
+                        setError('Could not detect location. Please enter your city manually.');
+                    }
                 }
             );
         } else {
-            // Geolocation not supported fallback
-            setUserLocation('Lusaka, Zambia');
             setIsLocating(false);
-            fetchAdvisory('Lusaka, Zambia');
+            if (!userLocation) {
+                setError('Geolocation not supported. Please enter your city manually.');
+            }
+        }
+    }
+
+    async function saveLocation(loc: string) {
+        try {
+            await fetch('/api/user/preferences', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ location: loc }),
+            });
+        } catch (err) {
+            console.error('Failed to save location preference', err);
         }
     }
 
     async function handleCustomLocationSubmit(e: React.FormEvent) {
         e.preventDefault();
         if (!locationInput.trim()) return;
+        const newLoc = locationInput.trim();
         setIsEditingLocation(false);
-        setUserLocation(locationInput.trim());
+        setUserLocation(newLoc);
         setLoading(true);
-        fetchAdvisory(locationInput.trim());
+        fetchAdvisory(newLoc);
+        saveLocation(newLoc);
     }
 
     async function loadCrops() {
@@ -179,14 +205,9 @@ export default function DashboardPage() {
     }
 
     useEffect(() => {
-        // Fetch language prefs first
-        fetchLanguagePreferences();
-
-        // Initial load starts by getting location
-        if (!userLocation && !isLocating) {
-            getUserGeolocation();
-        }
-    }, [userLocation, isLocating]);
+        // Fetch preferences first
+        fetchUserPreferences();
+    }, []);
 
     if (loading && !weather) {
         return (
@@ -430,7 +451,8 @@ export default function DashboardPage() {
                             <ChatPanel contextData={{
                                 crops: userCrops.map(c => c.name),
                                 location: weather?.location || userLocation,
-                                weather: weather
+                                weather: weather,
+                                language: languagePreference
                             }} />
                         )}
                     </div>

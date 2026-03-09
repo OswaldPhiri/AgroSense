@@ -11,6 +11,7 @@ export interface IUser extends Document {
     subscription_tier: 'free' | 'premium';
     languagePreference: 'en' | 'ny';
     languagePromptAnswered: boolean;
+    location?: string;
     crops: mongoose.Types.ObjectId[]; // Linked crops from a master list
     createdAt: Date;
     updatedAt: Date;
@@ -39,7 +40,7 @@ const UserSchema: Schema = new Schema(
             type: Boolean,
             default: false
         },
-
+        location: { type: String },
         crops: [{ type: Schema.Types.ObjectId, ref: 'Crop' }],
     },
     { timestamps: true }

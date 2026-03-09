@@ -10,20 +10,31 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { languagePreference } = await req.json();
+        const body = await req.json();
+        const { languagePreference, location } = body;
 
-        if (!['en', 'ny'].includes(languagePreference)) {
-            return NextResponse.json({ error: 'Invalid language' }, { status: 400 });
+        const updateData: any = {};
+        if (languagePreference) {
+            if (!['en', 'ny'].includes(languagePreference)) {
+                return NextResponse.json({ error: 'Invalid language' }, { status: 400 });
+            }
+            updateData.languagePreference = languagePreference;
+            updateData.languagePromptAnswered = true;
+        }
+
+        if (location) {
+            updateData.location = location;
+        }
+
+        if (Object.keys(updateData).length === 0) {
+            return NextResponse.json({ error: 'No data provided' }, { status: 400 });
         }
 
         await dbConnect();
 
         const user = await User.findOneAndUpdate(
             { email: session.user.email },
-            {
-                languagePreference,
-                languagePromptAnswered: true
-            },
+            updateData,
             { new: true }
         );
 
@@ -33,7 +44,8 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({
             success: true,
-            languagePreference: user.languagePreference
+            languagePreference: user.languagePreference,
+            location: user.location
         });
     } catch (error: any) {
         console.error('Preferences API Error:', error);
@@ -58,7 +70,8 @@ export async function GET(req: NextRequest) {
 
         return NextResponse.json({
             languagePreference: user.languagePreference || 'en',
-            languagePromptAnswered: user.languagePromptAnswered || false
+            languagePromptAnswered: user.languagePromptAnswered || false,
+            location: user.location || null
         });
     } catch (error: any) {
         console.error('Preferences API Error:', error);

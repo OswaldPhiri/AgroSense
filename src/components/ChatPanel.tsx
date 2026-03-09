@@ -11,16 +11,42 @@ interface ChatMessage {
 }
 
 export default function ChatPanel({ contextData }: { contextData: any }) {
-    const [messages, setMessages] = useState<ChatMessage[]>([
-        { role: 'assistant', content: 'Hello! I am AgroSense AI. How can I help you with your farm today?' }
-    ]);
+    const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
+    const [fetchingHistory, setFetchingHistory] = useState(true);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
+
+    useEffect(() => {
+        async function fetchHistory() {
+            try {
+                const res = await fetch('/api/chat');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.messages && data.messages.length > 0) {
+                        setMessages(data.messages.map((m: any) => ({
+                            role: m.role,
+                            content: m.content
+                        })));
+                    } else {
+                        // Default greeting if no history
+                        setMessages([
+                            { role: 'assistant', content: 'Hello! I am AgroSense AI. How can I help you with your farm today?' }
+                        ]);
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to fetch chat history', err);
+            } finally {
+                setFetchingHistory(false);
+            }
+        }
+        fetchHistory();
+    }, []);
 
     useEffect(() => {
         scrollToBottom();
@@ -32,7 +58,9 @@ export default function ChatPanel({ contextData }: { contextData: any }) {
 
         const userMsg = input.trim();
         setInput('');
-        setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+
+        const newMessages: ChatMessage[] = [...messages, { role: 'user', content: userMsg }];
+        setMessages(newMessages);
         setLoading(true);
 
         try {
@@ -40,7 +68,7 @@ export default function ChatPanel({ contextData }: { contextData: any }) {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    messages: [...messages, { role: 'user', content: userMsg }].map(m => ({
+                    messages: newMessages.map(m => ({
                         role: m.role,
                         content: m.content
                     })),
