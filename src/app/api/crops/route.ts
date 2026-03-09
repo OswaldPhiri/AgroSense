@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
-        if (!user.crops.includes(crop._id)) {
+        if (!user.crops.some((id: any) => id.toString() === crop._id.toString())) {
             user.crops.push(crop._id);
             await user.save();
         }

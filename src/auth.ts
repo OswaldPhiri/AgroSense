@@ -3,6 +3,7 @@ import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import clientPromise from '@/lib/db/clientPromise';
 import authConfig from '@/auth.config';
 import Credentials from 'next-auth/providers/credentials';
+import Google from 'next-auth/providers/google';
 import dbConnect from '@/lib/db/mongoose';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
@@ -14,6 +15,7 @@ const isDbConfigured = !!(process.env.MONGODB_URI &&
 export const { handlers, auth, signIn, signOut } = NextAuth({
     ...authConfig,
     providers: [
+        Google,
         Credentials({
             name: 'Credentials',
             credentials: {

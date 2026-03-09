@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Loader2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface ChatMessage {
     role: 'user' | 'assistant';
@@ -77,10 +79,44 @@ export default function ChatPanel({ contextData }: { contextData: any }) {
                         <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${msg.role === 'user' ? 'bg-green-600 text-white' : 'bg-white border border-gray-200 text-green-600'}`}>
                             {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                         </div>
-                        <div className={`max-w-[80%] rounded-2xl p-4 text-sm ${msg.role === 'user' ? 'bg-green-600 text-white rounded-tr-sm' : 'bg-white border border-gray-200 text-gray-700 rounded-tl-sm shadow-sm'}`}>
-                            {msg.content.split('\n').map((line, i) => (
-                                <p key={i} className="mb-1">{line}</p>
-                            ))}
+                        <div className={`max-w-[85%] rounded-2xl p-4 text-sm ${msg.role === 'user' ? 'bg-green-600 text-white rounded-tr-sm' : 'bg-white border border-gray-200 text-gray-700 rounded-tl-sm shadow-sm'}`}>
+                            {msg.role === 'user' ? (
+                                <p>{msg.content}</p>
+                            ) : (
+                                <ReactMarkdown
+                                    remarkPlugins={[remarkGfm]}
+                                    components={{
+                                        p: ({ node, ...props }) => <p className="mb-3 last:mb-0 leading-relaxed" {...props} />,
+                                        ul: ({ node, ...props }) => <ul className="list-disc ml-5 mb-3 space-y-1" {...props} />,
+                                        ol: ({ node, ...props }) => <ol className="list-decimal ml-5 mb-3 space-y-1" {...props} />,
+                                        li: ({ node, ...props }) => <li className="pl-1" {...props} />,
+                                        h1: ({ node, ...props }) => <h1 className="text-xl font-bold mb-3 text-gray-900" {...props} />,
+                                        h2: ({ node, ...props }) => <h2 className="text-lg font-bold mb-3 text-gray-900 mt-4" {...props} />,
+                                        h3: ({ node, ...props }) => <h3 className="text-base font-bold mb-2 text-gray-900 mt-3" {...props} />,
+                                        a: ({ node, ...props }) => <a className="text-green-600 font-medium hover:underline" target="_blank" rel="noopener noreferrer" {...props} />,
+                                        strong: ({ node, ...props }) => <strong className="font-bold text-gray-900" {...props} />,
+                                        blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-green-500 pl-4 py-1 italic text-gray-600 bg-green-50/50 my-3 rounded-r" {...props} />,
+                                        table: ({ node, ...props }) => <div className="overflow-x-auto mb-3 border border-gray-200 rounded-lg"><table className="w-full text-left border-collapse" {...props} /></div>,
+                                        th: ({ node, ...props }) => <th className="bg-gray-50 p-2 border-b border-gray-200 font-bold" {...props} />,
+                                        td: ({ node, ...props }) => <td className="p-2 border-b border-gray-100" {...props} />,
+                                        code: ({ node, className, children, ...props }: any) => {
+                                            const match = /language-(\w+)/.exec(className || '');
+                                            const isInline = !match && !String(children).includes('\n');
+                                            return isInline ? (
+                                                <code className="bg-gray-100/80 text-green-700 px-1.5 py-0.5 rounded-md text-xs font-mono border border-gray-200/50" {...props}>
+                                                    {children}
+                                                </code>
+                                            ) : (
+                                                <code className="block bg-[#1E1E1E] text-gray-100 p-4 rounded-xl text-xs overflow-x-auto mb-3 font-mono shadow-sm" {...props}>
+                                                    {children}
+                                                </code>
+                                            );
+                                        }
+                                    }}
+                                >
+                                    {msg.content}
+                                </ReactMarkdown>
+                            )}
                         </div>
                     </div>
                 ))}
