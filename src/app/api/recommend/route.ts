@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
         await dbConnect();
 
         const body: AIRecommendationRequest = await request.json();
-        const { weather, crops, location } = body;
+        const { weather, crops, location, language } = body as any;
 
         if (!weather || !crops || crops.length === 0) {
             return NextResponse.json(
@@ -65,6 +65,8 @@ export async function POST(request: NextRequest) {
           "recommendations": ["list of 3-5 specific actions"],
           "warnings": ["list of alerts or potential issues"]
         }
+        
+        ${language === 'ny' ? 'IMPORTANT: You MUST write your entire response, including the summary, recommendations, and warnings in Chichewa (Nyanja). Do NOT use English.' : ''}
 
         Focus on irrigation, pesticide timing, and general crop health.
       `;

@@ -60,7 +60,7 @@ export default function ChatPanel({ contextData }: { contextData: any }) {
     };
 
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 flex flex-col h-[600px]">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 flex flex-col h-[75vh] md:h-[600px]">
             {/* Header */}
             <div className="p-4 border-b border-gray-100 flex items-center gap-3">
                 <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">

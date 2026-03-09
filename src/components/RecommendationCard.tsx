@@ -35,12 +35,12 @@ export default function RecommendationCard({ data, loading }: RecommendationCard
 
     return (
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 h-full flex flex-col">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center items-start gap-4 mb-6">
                 <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    <Lightbulb className="w-6 h-6 text-amber-500" />
+                    <Lightbulb className="w-6 h-6 text-amber-500 flex-shrink-0" />
                     AI Farming Advisory
                 </h3>
-                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 border ${riskColors[data.risk_level]}`}>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 border w-fit ${riskColors[data.risk_level]}`}>
                     {riskIcons[data.risk_level]}
                     {data.risk_level} Risk
                 </span>

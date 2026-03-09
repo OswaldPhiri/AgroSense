@@ -32,6 +32,8 @@ Context about the farmer:
 Location: ${context?.location || 'Unknown'}
 Active Crops: ${context?.crops?.join(', ') || 'Unknown'}
 Current Weather: ${context?.weather ? `${context.weather.temperature}°C, ${context.weather.forecast_summary}` : 'Unknown'}
+
+${context?.language === 'ny' ? 'IMPORTANT: You MUST respond entirely in Chichewa (Nyanja). Do NOT reply in English.' : ''}
 `,
         };
 

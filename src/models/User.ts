@@ -9,6 +9,8 @@ export interface IUser extends Document {
     location_lng?: number;
     district?: string;
     subscription_tier: 'free' | 'premium';
+    languagePreference: 'en' | 'ny';
+    languagePromptAnswered: boolean;
     crops: mongoose.Types.ObjectId[]; // Linked crops from a master list
     createdAt: Date;
     updatedAt: Date;
@@ -27,6 +29,15 @@ const UserSchema: Schema = new Schema(
             type: String,
             enum: ['free', 'premium'],
             default: 'free'
+        },
+        languagePreference: {
+            type: String,
+            enum: ['en', 'ny'],
+            default: 'en'
+        },
+        languagePromptAnswered: {
+            type: Boolean,
+            default: false
         },
 
         crops: [{ type: Schema.Types.ObjectId, ref: 'Crop' }],

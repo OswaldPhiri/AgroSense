@@ -5,6 +5,7 @@ import { useSession, signOut } from 'next-auth/react';
 import WeatherCard from '@/components/WeatherCard';
 import RecommendationCard from '@/components/RecommendationCard';
 import ChatPanel from '@/components/ChatPanel';
+import LanguagePromptModal from '@/components/LanguagePromptModal';
 import { WeatherData } from '@/types/weather';
 import { AIRecommendationResponse } from '@/types/ai';
 import { Loader2, Sprout, LogOut, RefreshCw, MapPin, Plus, X, MessageSquare, Lightbulb, Search, Navigation } from 'lucide-react';
@@ -20,6 +21,10 @@ export default function DashboardPage() {
     const [recommendation, setRecommendation] = useState<AIRecommendationResponse | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    // Language State
+    const [languagePreference, setLanguagePreference] = useState<'en' | 'ny'>('en');
+    const [showLanguagePrompt, setShowLanguagePrompt] = useState(false);
 
     // Crops State
     const [userCrops, setUserCrops] = useState<Crop[]>([]);
@@ -38,6 +43,21 @@ export default function DashboardPage() {
     const userInitials = session?.user?.name
         ? session.user.name.split(' ').map(n => n[0]).join('').toUpperCase()
         : 'US';
+
+    async function fetchLanguagePreferences() {
+        try {
+            const res = await fetch('/api/user/preferences');
+            if (res.ok) {
+                const data = await res.json();
+                setLanguagePreference(data.languagePreference || 'en');
+                if (!data.languagePromptAnswered) {
+                    setShowLanguagePrompt(true);
+                }
+            }
+        } catch (err) {
+            console.error('Failed to fetch language preferences', err);
+        }
+    }
 
     async function getUserGeolocation() {
         setIsLocating(true);
@@ -145,6 +165,7 @@ export default function DashboardPage() {
                     weather: weatherData,
                     crops: cropNames,
                     location: weatherData.location || locToFetch, // Use normalized location name from weather API
+                    language: languagePreference
                 }),
             });
             if (!aiRes.ok) throw new Error('Failed to fetch AI recommendations');
@@ -158,6 +179,9 @@ export default function DashboardPage() {
     }
 
     useEffect(() => {
+        // Fetch language prefs first
+        fetchLanguagePreferences();
+
         // Initial load starts by getting location
         if (!userLocation && !isLocating) {
             getUserGeolocation();
@@ -177,6 +201,18 @@ export default function DashboardPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 pb-12">
+            {showLanguagePrompt && (
+                <LanguagePromptModal
+                    onComplete={(lang) => {
+                        setLanguagePreference(lang);
+                        setShowLanguagePrompt(false);
+                        if (userLocation) {
+                            fetchAdvisory(userLocation); // Refetch advisory in new language
+                        }
+                    }}
+                />
+            )}
+
             {/* Header */}
             <header className="bg-white border-b border-gray-200 py-4 mb-8 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
