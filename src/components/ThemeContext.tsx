@@ -15,16 +15,34 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [theme, setThemeState] = useState<Theme>('light');
 
+    const applyTheme = (t: Theme) => {
+        if (typeof window === 'undefined') return;
+        const root = window.document.documentElement;
+        if (t === 'dark') {
+            root.classList.add('dark');
+        } else {
+            root.classList.remove('dark');
+        }
+    };
+
     useEffect(() => {
-        // Initial theme load from DB/Preferences
+        // 1. Immediate load from localStorage for better UX
+        const savedTheme = localStorage.getItem('agro-theme') as Theme;
+        if (savedTheme) {
+            setThemeState(savedTheme);
+            applyTheme(savedTheme);
+        }
+
+        // 2. Fetch from DB for cross-device persistence
         const fetchTheme = async () => {
             try {
                 const res = await fetch('/api/user/preferences');
                 if (res.ok) {
                     const data = await res.json();
-                    if (data.themePreference) {
+                    if (data.themePreference && data.themePreference !== savedTheme) {
                         setThemeState(data.themePreference);
                         applyTheme(data.themePreference);
+                        localStorage.setItem('agro-theme', data.themePreference);
                     }
                 }
             } catch (err) {
@@ -34,18 +52,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         fetchTheme();
     }, []);
 
-    const applyTheme = (t: Theme) => {
-        const root = window.document.documentElement;
-        if (t === 'dark') {
-            root.classList.add('dark');
-        } else {
-            root.classList.remove('dark');
-        }
-    };
-
     const setTheme = (t: Theme) => {
         setThemeState(t);
         applyTheme(t);
+        localStorage.setItem('agro-theme', t);
         // Persist to DB
         fetch('/api/user/preferences', {
             method: 'POST',
