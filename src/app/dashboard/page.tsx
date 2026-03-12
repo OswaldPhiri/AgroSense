@@ -8,7 +8,8 @@ import ChatPanel from '@/components/ChatPanel';
 import LanguagePromptModal from '@/components/LanguagePromptModal';
 import { WeatherData } from '@/types/weather';
 import { AIRecommendationResponse } from '@/types/ai';
-import { Loader2, Sprout, LogOut, RefreshCw, MapPin, Plus, X, MessageSquare, Lightbulb, Search, Navigation } from 'lucide-react';
+import { Loader2, Sprout, LogOut, RefreshCw, MapPin, Plus, X, MessageSquare, Lightbulb, Search, Navigation, Settings } from 'lucide-react';
+import Link from 'next/link';
 
 interface Crop {
     _id: string;
@@ -40,6 +41,7 @@ const translations = {
         refresh: 'Refresh data',
         signOut: 'Sign out',
         aiAdvisoryDashboard: 'AI Advisory Dashboard',
+        settings: 'Settings'
     },
     ny: {
         goodMorning: 'Mwauka Bwanji',
@@ -65,6 +67,7 @@ const translations = {
         refresh: 'Tsitsimutsani zidziwitso',
         signOut: 'Tulukani',
         aiAdvisoryDashboard: 'Dashboard ya Uphungu wa AI',
+        settings: 'Zokonda'
     }
 };
 
@@ -267,9 +270,9 @@ export default function DashboardPage() {
 
     if (loading && !weather) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 gap-4">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-950 gap-4 transition-colors">
                 <Loader2 className="w-12 h-12 text-green-600 animate-spin" />
-                <p className="text-gray-500 text-sm">
+                <p className="text-gray-500 dark:text-gray-400 text-sm">
                     {isLocating ? t.detectingLocation : t.loadingFarmData}
                 </p>
             </div>
@@ -277,7 +280,7 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 pb-12">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-12 transition-colors duration-200">
             {showLanguagePrompt && (
                 <LanguagePromptModal
                     onComplete={(lang) => {
@@ -291,39 +294,39 @@ export default function DashboardPage() {
             )}
 
             {/* Header */}
-            <header className="bg-white border-b border-gray-200 py-4 mb-8 shadow-sm">
+            <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 py-4 mb-8 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                     <div className="flex items-center gap-3">
-                        <div className="bg-green-100 p-2 rounded-lg hidden sm:block">
-                            <Sprout className="w-7 h-7 text-green-600" />
+                        <div className="bg-green-100 dark:bg-green-950/30 p-2 rounded-lg hidden sm:block">
+                            <Sprout className="w-7 h-7 text-green-600 dark:text-green-400" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold text-gray-900 tracking-tight">AgroSense</h1>
-                            <p className="text-xs text-gray-500 hidden sm:block">{t.aiAdvisoryDashboard}</p>
+                            <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">AgroSense</h1>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">{t.aiAdvisoryDashboard}</p>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-2 sm:gap-4">
                         {/* Location Editor */}
-                        <div className="hidden md:flex items-center bg-gray-50 rounded-lg border border-gray-100 px-2 py-1">
+                        <div className="hidden md:flex items-center bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700 px-2 py-1">
                             {isEditingLocation ? (
                                 <form onSubmit={handleCustomLocationSubmit} className="flex items-center gap-2">
-                                    <MapPin className="w-4 h-4 text-green-600" />
+                                    <MapPin className="w-4 h-4 text-green-600 dark:text-green-400" />
                                     <input
                                         type="text"
                                         autoFocus
                                         value={locationInput}
                                         onChange={(e) => setLocationInput(e.target.value)}
                                         placeholder={t.enterLocation}
-                                        className="bg-transparent border-none focus:outline-none text-sm w-32 placeholder:text-gray-400 text-gray-900"
+                                        className="bg-transparent border-none focus:outline-none text-sm w-32 placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
                                     />
-                                    <button type="submit" className="text-green-600 hover:text-green-700 p-1">
+                                    <button type="submit" className="text-green-600 dark:text-green-400 hover:text-green-700 p-1">
                                         <Search className="w-4 h-4" />
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setIsEditingLocation(false)}
-                                        className="text-gray-400 hover:text-red-500 p-1"
+                                        className="text-gray-400 dark:text-gray-500 hover:text-red-500 p-1"
                                     >
                                         <X className="w-4 h-4" />
                                     </button>
@@ -332,7 +335,7 @@ export default function DashboardPage() {
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={getUserGeolocation}
-                                        className="p-1 text-gray-400 hover:text-green-600 flex items-center justify-center transition-colors"
+                                        className="p-1 text-gray-400 dark:text-gray-500 hover:text-green-600 dark:hover:text-green-400 flex items-center justify-center transition-colors"
                                         title={t.useMyLocation}
                                     >
                                         <Navigation className="w-4 h-4" />
@@ -342,9 +345,9 @@ export default function DashboardPage() {
                                             setLocationInput(weather?.location || userLocation);
                                             setIsEditingLocation(true);
                                         }}
-                                        className="flex items-center gap-2 text-sm text-gray-700 hover:text-green-600 transition-colors"
+                                        className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors"
                                     >
-                                        <MapPin className="w-4 h-4 text-green-600" />
+                                        <MapPin className="w-4 h-4 text-green-600 dark:text-green-400" />
                                         <span className="truncate max-w-[150px]">{weather?.location || userLocation || t.location}</span>
                                     </button>
                                 </div>
@@ -353,18 +356,26 @@ export default function DashboardPage() {
 
                         <button
                             onClick={() => { setLoading(true); fetchAdvisory(userLocation); }}
-                            className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-950/20 rounded-lg transition-colors"
                             title={t.refresh}
                         >
                             <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
                         </button>
+
+                        <Link
+                            href="/dashboard/settings"
+                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-green-600 dark:hover:text-green-400 hover:bg-green-50 dark:hover:bg-green-950/20 rounded-lg transition-colors"
+                            title={t.settings}
+                        >
+                            <Settings className="w-5 h-5" />
+                        </Link>
 
                         <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
                             {userInitials}
                         </div>
                         <button
                             onClick={() => signOut({ callbackUrl: '/login' })}
-                            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-colors"
                             title={t.signOut}
                         >
                             <LogOut className="w-5 h-5" />
@@ -376,29 +387,29 @@ export default function DashboardPage() {
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Welcome */}
                 <div className="mb-8">
-                    <h2 className="text-2xl font-bold text-gray-900">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">
                         {new Date().getHours() < 12 ? t.goodMorning : new Date().getHours() < 18 ? t.goodAfternoon : t.goodEvening}, {session?.user?.name || t.farmer} 👋
                     </h2>
-                    <p className="text-gray-500 mt-1">{t.advisoryDescription}</p>
+                    <p className="text-gray-500 dark:text-gray-400 mt-1">{t.advisoryDescription}</p>
 
                     {/* Mobile Location Display */}
-                    <div className="md:hidden mt-4 flex items-center gap-2 text-sm text-gray-600">
+                    <div className="md:hidden mt-4 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <button
                             onClick={getUserGeolocation}
-                            className="p-1.5 bg-white border border-gray-200 rounded-md text-gray-500 hover:text-green-600 flex items-center justify-center transition-colors"
+                            className="p-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-gray-500 dark:text-gray-400 hover:text-green-600 dark:hover:text-green-400 flex items-center justify-center transition-colors"
                         >
                             <Navigation className="w-4 h-4" />
                         </button>
-                        <form onSubmit={handleCustomLocationSubmit} className="flex flex-1 items-center bg-white border border-gray-200 rounded-md px-3 py-1.5 focus-within:border-green-500 focus-within:ring-1 focus-within:ring-green-500">
-                            <MapPin className="w-4 h-4 text-green-600 mr-2" />
+                        <form onSubmit={handleCustomLocationSubmit} className="flex flex-1 items-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md px-3 py-1.5 focus-within:border-green-500 focus-within:ring-1 focus-within:ring-green-500">
+                            <MapPin className="w-4 h-4 text-green-600 dark:text-green-400 mr-2" />
                             <input
                                 type="text"
                                 value={locationInput !== '' ? locationInput : (weather?.location || userLocation)}
                                 onChange={(e) => setLocationInput(e.target.value)}
                                 placeholder={t.enterLocation}
-                                className="bg-transparent border-none focus:outline-none w-full text-gray-900"
+                                className="bg-transparent border-none focus:outline-none w-full text-gray-900 dark:text-white"
                             />
-                            <button type="submit" className="text-gray-400 hover:text-green-600 ml-2">
+                            <button type="submit" className="text-gray-400 dark:text-gray-500 hover:text-green-600 dark:hover:text-green-400 ml-2">
                                 <Search className="w-4 h-4" />
                             </button>
                         </form>
@@ -417,8 +428,8 @@ export default function DashboardPage() {
                     <div className="lg:col-span-5 space-y-6">
                         {weather && <WeatherCard data={weather} language={languagePreference} />}
 
-                        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                            <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">{t.activeCrops}</h3>
+                        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm transition-colors">
+                            <h3 className="text-gray-400 dark:text-gray-500 text-xs font-bold uppercase tracking-widest mb-4">{t.activeCrops}</h3>
 
                             <form onSubmit={addCrop} className="flex gap-2 mb-4">
                                 <input
@@ -426,13 +437,13 @@ export default function DashboardPage() {
                                     value={newCropInput}
                                     onChange={(e) => setNewCropInput(e.target.value)}
                                     placeholder={t.addNewCrop}
-                                    className="flex-grow bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500"
+                                    className="flex-grow bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500 text-gray-900 dark:text-white"
                                     disabled={addingCrop}
                                 />
                                 <button
                                     type="submit"
                                     disabled={!newCropInput.trim() || addingCrop}
-                                    className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-green-700 disabled:opacity-50 flex items-center gap-1"
+                                    className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-bold hover:bg-green-700 disabled:opacity-50 flex items-center gap-1 shadow-md shadow-green-600/20"
                                 >
                                     {addingCrop ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                                     {t.add}
@@ -441,14 +452,14 @@ export default function DashboardPage() {
 
                             <div className="flex flex-wrap gap-2">
                                 {userCrops.length === 0 ? (
-                                    <p className="text-sm text-gray-500 italic">{t.noCrops}</p>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 italic">{t.noCrops}</p>
                                 ) : (
                                     userCrops.map(crop => (
-                                        <span key={crop._id} className="inline-flex items-center gap-1 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg border border-green-200 text-sm font-medium group">
+                                        <span key={crop._id} className="inline-flex items-center gap-1 px-3 py-1.5 bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 rounded-lg border border-green-200 dark:border-green-800/50 text-sm font-medium group transition-colors">
                                             {crop.name}
                                             <button
                                                 onClick={() => removeCrop(crop._id)}
-                                                className="text-green-600 hover:text-red-500 hover:bg-red-50 rounded p-0.5 opacity-50 group-hover:opacity-100 transition-all"
+                                                className="text-green-600 dark:text-green-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded p-0.5 opacity-50 group-hover:opacity-100 transition-all"
                                                 title="Remove crop"
                                             >
                                                 <X className="w-3.5 h-3.5" />

@@ -171,12 +171,12 @@ export default function ChatPanel({ contextData }: { contextData: any }) {
                 ))}
                 {loading && (
                     <div className="flex gap-3">
-                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white border border-gray-200 flex items-center justify-center text-green-600">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-green-600 dark:text-green-400">
                             <Bot className="w-4 h-4" />
                         </div>
-                        <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm p-4 shadow-sm flex items-center gap-2">
-                            <Loader2 className="w-4 h-4 text-green-600 animate-spin" />
-                            <span className="text-sm text-gray-500">{t.typing}</span>
+                        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl rounded-tl-sm p-4 shadow-sm flex items-center gap-2">
+                            <Loader2 className="w-4 h-4 text-green-600 dark:text-green-400 animate-spin" />
+                            <span className="text-sm text-gray-500 dark:text-gray-400">{t.typing}</span>
                         </div>
                     </div>
                 )}
@@ -184,13 +184,13 @@ export default function ChatPanel({ contextData }: { contextData: any }) {
             </div>
 
             {/* Input Area */}
-            <form onSubmit={handleSend} className="p-4 bg-white border-t border-gray-100 flex gap-2">
+            <form onSubmit={handleSend} className="p-4 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 flex gap-2">
                 <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder={t.placeholder}
-                    className="flex-grow bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/10 transition-all text-gray-900"
+                    className="flex-grow bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/10 transition-all text-gray-900 dark:text-white dark:placeholder-gray-500"
                     disabled={loading}
                 />
                 <button

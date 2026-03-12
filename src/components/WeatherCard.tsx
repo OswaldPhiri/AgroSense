@@ -29,54 +29,54 @@ export default function WeatherCard({ data, language = 'en' }: WeatherCardProps)
     const t = translations[language];
 
     return (
-        <div className="bg-gradient-to-br from-green-600 to-emerald-700 rounded-2xl p-6 text-white shadow-xl">
+        <div className="bg-gradient-to-br from-green-600 to-emerald-700 dark:from-green-700 dark:to-emerald-900 rounded-2xl p-6 text-white shadow-xl">
             <div className="flex justify-between items-start mb-6">
                 <div>
-                    <h3 className="text-sm font-medium text-green-100 uppercase tracking-wider">{t.currentWeather}</h3>
+                    <h3 className="text-sm font-medium text-green-100 dark:text-green-200 uppercase tracking-wider">{t.currentWeather}</h3>
                     <p className="text-2xl font-bold">{data.location}</p>
                 </div>
-                <Cloud className="w-10 h-10 text-green-200" />
+                <Cloud className="w-10 h-10 text-green-200 dark:text-green-300" />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center space-x-3 bg-white/15 p-3 rounded-xl backdrop-blur-sm">
-                    <Thermometer className="w-6 h-6 text-orange-300" />
+                <div className="flex items-center space-x-3 bg-white/15 dark:bg-black/20 p-3 rounded-xl backdrop-blur-sm">
+                    <Thermometer className="w-6 h-6 text-orange-300 dark:text-orange-400" />
                     <div>
-                        <p className="text-xs text-green-100">{t.temperature}</p>
+                        <p className="text-xs text-green-100 dark:text-green-200">{t.temperature}</p>
                         <p className="text-lg font-semibold">{data.temperature}°C</p>
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-3 bg-white/15 p-3 rounded-xl backdrop-blur-sm">
-                    <Droplets className="w-6 h-6 text-blue-300" />
+                <div className="flex items-center space-x-3 bg-white/15 dark:bg-black/20 p-3 rounded-xl backdrop-blur-sm">
+                    <Droplets className="w-6 h-6 text-blue-300 dark:text-blue-400" />
                     <div>
-                        <p className="text-xs text-green-100">{t.rainProb}</p>
+                        <p className="text-xs text-green-100 dark:text-green-200">{t.rainProb}</p>
                         <p className="text-lg font-semibold">{data.rainfall_probability}%</p>
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-3 bg-white/15 p-3 rounded-xl backdrop-blur-sm">
-                    <Cloud className="w-6 h-6 text-white/70" />
+                <div className="flex items-center space-x-3 bg-white/15 dark:bg-black/20 p-3 rounded-xl backdrop-blur-sm">
+                    <Cloud className="w-6 h-6 text-white/70 dark:text-white/60" />
                     <div>
-                        <p className="text-xs text-green-100">{t.humidity}</p>
+                        <p className="text-xs text-green-100 dark:text-green-200">{t.humidity}</p>
                         <p className="text-lg font-semibold">{data.humidity}%</p>
                     </div>
                 </div>
 
-                <div className="flex items-center space-x-3 bg-white/15 p-3 rounded-xl backdrop-blur-sm">
-                    <Wind className="w-6 h-6 text-teal-200" />
+                <div className="flex items-center space-x-3 bg-white/15 dark:bg-black/20 p-3 rounded-xl backdrop-blur-sm">
+                    <Wind className="w-6 h-6 text-teal-200 dark:text-teal-300" />
                     <div>
-                        <p className="text-xs text-green-100">{t.windSpeed}</p>
+                        <p className="text-xs text-green-100 dark:text-green-200">{t.windSpeed}</p>
                         <p className="text-lg font-semibold">{data.wind_speed} km/h</p>
                     </div>
                 </div>
             </div>
 
-            <div className="mt-6 p-4 bg-white/10 border border-white/20 rounded-xl backdrop-blur-sm">
-                <p className="text-sm text-green-50 italic">&quot;{data.forecast_summary}&quot;</p>
+            <div className="mt-6 p-4 bg-white/10 dark:bg-black/10 border border-white/20 dark:border-white/10 rounded-xl backdrop-blur-sm">
+                <p className="text-sm text-green-50 dark:text-green-100 italic">&quot;{data.forecast_summary}&quot;</p>
             </div>
 
-            <p className="mt-4 text-[10px] text-green-200 text-right uppercase tracking-widest">
+            <p className="mt-4 text-[10px] text-green-200 dark:text-green-300 text-right uppercase tracking-widest">
                 {t.updated}: {new Date(data.observation_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </p>
         </div>

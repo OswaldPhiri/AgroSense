@@ -12,6 +12,7 @@ export interface IUser extends Document {
     languagePreference: 'en' | 'ny';
     languagePromptAnswered: boolean;
     location?: string;
+    themePreference: 'light' | 'dark';
     crops: mongoose.Types.ObjectId[]; // Linked crops from a master list
     createdAt: Date;
     updatedAt: Date;
@@ -41,6 +42,11 @@ const UserSchema: Schema = new Schema(
             default: false
         },
         location: { type: String },
+        themePreference: {
+            type: String,
+            enum: ['light', 'dark'],
+            default: 'light'
+        },
         crops: [{ type: Schema.Types.ObjectId, ref: 'Crop' }],
     },
     { timestamps: true }

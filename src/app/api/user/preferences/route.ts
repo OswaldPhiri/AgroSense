@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { languagePreference, location } = body;
+        const { languagePreference, location, themePreference } = body;
 
         const updateData: any = {};
         if (languagePreference) {
@@ -20,6 +20,13 @@ export async function POST(req: NextRequest) {
             }
             updateData.languagePreference = languagePreference;
             updateData.languagePromptAnswered = true;
+        }
+
+        if (themePreference) {
+            if (!['light', 'dark'].includes(themePreference)) {
+                return NextResponse.json({ error: 'Invalid theme' }, { status: 400 });
+            }
+            updateData.themePreference = themePreference;
         }
 
         if (location) {
@@ -45,7 +52,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({
             success: true,
             languagePreference: user.languagePreference,
-            location: user.location
+            location: user.location,
+            themePreference: user.themePreference
         });
     } catch (error: any) {
         console.error('Preferences API Error:', error);
@@ -71,7 +79,8 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({
             languagePreference: user.languagePreference || 'en',
             languagePromptAnswered: user.languagePromptAnswered || false,
-            location: user.location || null
+            location: user.location || null,
+            themePreference: user.themePreference || 'light'
         });
     } catch (error: any) {
         console.error('Preferences API Error:', error);
