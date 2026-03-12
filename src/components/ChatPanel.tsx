@@ -10,7 +10,28 @@ interface ChatMessage {
     content: string;
 }
 
+const translations = {
+    en: {
+        greeting: 'Hello! I am AgroSense AI. How can I help you with your farm today?',
+        placeholder: 'Ask about crops, pests, or farming...',
+        typing: 'AgroSense is typing...',
+        assistantName: 'AgroSense Assistant',
+        assistantSub: 'Always here to help',
+        error: 'Sorry, I encountered an error. Please try again.',
+    },
+    ny: {
+        greeting: 'Moni! Ine ndine AgroSense AI. Ndingakuthandizeni bwanji pa famu yanu lero?',
+        placeholder: 'Funsani za zomera, tizirombo, kapena ulimi...',
+        typing: 'AgroSense ikulemba...',
+        assistantName: 'Mthandizi wa AgroSense',
+        assistantSub: 'Nthawi zonse ali pano kuti athandize',
+        error: 'Pepani, kwachitika vuto. Chonde yesaninso.',
+    }
+};
+
 export default function ChatPanel({ contextData }: { contextData: any }) {
+    const language: 'en' | 'ny' = contextData?.language || 'en';
+    const t = translations[language];
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
@@ -35,7 +56,7 @@ export default function ChatPanel({ contextData }: { contextData: any }) {
                     } else {
                         // Default greeting if no history
                         setMessages([
-                            { role: 'assistant', content: 'Hello! I am AgroSense AI. How can I help you with your farm today?' }
+                            { role: 'assistant', content: t.greeting }
                         ]);
                     }
                 }
@@ -81,7 +102,7 @@ export default function ChatPanel({ contextData }: { contextData: any }) {
             const data = await response.json();
             setMessages(prev => [...prev, data.message]);
         } catch (error) {
-            setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
+            setMessages(prev => [...prev, { role: 'assistant', content: t.error }]);
         } finally {
             setLoading(false);
         }
@@ -95,8 +116,8 @@ export default function ChatPanel({ contextData }: { contextData: any }) {
                     <Bot className="w-5 h-5 text-green-600" />
                 </div>
                 <div>
-                    <h3 className="font-bold text-gray-900">AgroSense Assistant</h3>
-                    <p className="text-xs text-gray-500">Always here to help</p>
+                    <h3 className="font-bold text-gray-900">{t.assistantName}</h3>
+                    <p className="text-xs text-gray-500">{t.assistantSub}</p>
                 </div>
             </div>
 
@@ -155,7 +176,7 @@ export default function ChatPanel({ contextData }: { contextData: any }) {
                         </div>
                         <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm p-4 shadow-sm flex items-center gap-2">
                             <Loader2 className="w-4 h-4 text-green-600 animate-spin" />
-                            <span className="text-sm text-gray-500">AgroSense is typing...</span>
+                            <span className="text-sm text-gray-500">{t.typing}</span>
                         </div>
                     </div>
                 )}
@@ -168,7 +189,7 @@ export default function ChatPanel({ contextData }: { contextData: any }) {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask about crops, pests, or farming..."
+                    placeholder={t.placeholder}
                     className="flex-grow bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/10 transition-all text-gray-900"
                     disabled={loading}
                 />

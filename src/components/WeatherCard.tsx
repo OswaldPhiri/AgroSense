@@ -3,14 +3,36 @@ import { WeatherData } from '@/types/weather';
 
 interface WeatherCardProps {
     data: WeatherData;
+    language?: 'en' | 'ny';
 }
 
-export default function WeatherCard({ data }: WeatherCardProps) {
+const translations = {
+    en: {
+        currentWeather: 'Current Weather',
+        temperature: 'Temperature',
+        rainProb: 'Rain Prob.',
+        humidity: 'Humidity',
+        windSpeed: 'Wind Speed',
+        updated: 'Updated',
+    },
+    ny: {
+        currentWeather: 'Nyengo ya Panopa',
+        temperature: 'Kutentha',
+        rainProb: 'Mwayi wa Mvula',
+        humidity: 'Chinyezi',
+        windSpeed: 'Liwiro la Mphepo',
+        updated: 'Zasinthidwa pa',
+    }
+};
+
+export default function WeatherCard({ data, language = 'en' }: WeatherCardProps) {
+    const t = translations[language];
+
     return (
         <div className="bg-gradient-to-br from-green-600 to-emerald-700 rounded-2xl p-6 text-white shadow-xl">
             <div className="flex justify-between items-start mb-6">
                 <div>
-                    <h3 className="text-sm font-medium text-green-100 uppercase tracking-wider">Current Weather</h3>
+                    <h3 className="text-sm font-medium text-green-100 uppercase tracking-wider">{t.currentWeather}</h3>
                     <p className="text-2xl font-bold">{data.location}</p>
                 </div>
                 <Cloud className="w-10 h-10 text-green-200" />
@@ -20,7 +42,7 @@ export default function WeatherCard({ data }: WeatherCardProps) {
                 <div className="flex items-center space-x-3 bg-white/15 p-3 rounded-xl backdrop-blur-sm">
                     <Thermometer className="w-6 h-6 text-orange-300" />
                     <div>
-                        <p className="text-xs text-green-100">Temperature</p>
+                        <p className="text-xs text-green-100">{t.temperature}</p>
                         <p className="text-lg font-semibold">{data.temperature}°C</p>
                     </div>
                 </div>
@@ -28,7 +50,7 @@ export default function WeatherCard({ data }: WeatherCardProps) {
                 <div className="flex items-center space-x-3 bg-white/15 p-3 rounded-xl backdrop-blur-sm">
                     <Droplets className="w-6 h-6 text-blue-300" />
                     <div>
-                        <p className="text-xs text-green-100">Rain Prob.</p>
+                        <p className="text-xs text-green-100">{t.rainProb}</p>
                         <p className="text-lg font-semibold">{data.rainfall_probability}%</p>
                     </div>
                 </div>
@@ -36,7 +58,7 @@ export default function WeatherCard({ data }: WeatherCardProps) {
                 <div className="flex items-center space-x-3 bg-white/15 p-3 rounded-xl backdrop-blur-sm">
                     <Cloud className="w-6 h-6 text-white/70" />
                     <div>
-                        <p className="text-xs text-green-100">Humidity</p>
+                        <p className="text-xs text-green-100">{t.humidity}</p>
                         <p className="text-lg font-semibold">{data.humidity}%</p>
                     </div>
                 </div>
@@ -44,7 +66,7 @@ export default function WeatherCard({ data }: WeatherCardProps) {
                 <div className="flex items-center space-x-3 bg-white/15 p-3 rounded-xl backdrop-blur-sm">
                     <Wind className="w-6 h-6 text-teal-200" />
                     <div>
-                        <p className="text-xs text-green-100">Wind Speed</p>
+                        <p className="text-xs text-green-100">{t.windSpeed}</p>
                         <p className="text-lg font-semibold">{data.wind_speed} km/h</p>
                     </div>
                 </div>
@@ -55,7 +77,7 @@ export default function WeatherCard({ data }: WeatherCardProps) {
             </div>
 
             <p className="mt-4 text-[10px] text-green-200 text-right uppercase tracking-widest">
-                Updated: {new Date(data.observation_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {t.updated}: {new Date(data.observation_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </p>
         </div>
     );

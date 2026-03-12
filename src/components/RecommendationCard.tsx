@@ -4,9 +4,35 @@ import { AIRecommendationResponse } from '@/types/ai';
 interface RecommendationCardProps {
     data: AIRecommendationResponse;
     loading?: boolean;
+    language?: 'en' | 'ny';
 }
 
-export default function RecommendationCard({ data, loading }: RecommendationCardProps) {
+const translations = {
+    en: {
+        aiFarmingAdvisory: 'AI Farming Advisory',
+        risk: 'Risk',
+        keyRecommendations: 'Key Recommendations',
+        criticalWarnings: 'Critical Warnings',
+        poweredBy: 'Powered by AgroSense AI Engine',
+        low: 'Low',
+        moderate: 'Moderate',
+        high: 'High',
+    },
+    ny: {
+        aiFarmingAdvisory: 'Uphungu wa Ulimi wa AI',
+        risk: 'Ngozi',
+        keyRecommendations: 'Zofunika Kuchita',
+        criticalWarnings: 'Machenjezo Ofunika',
+        poweredBy: 'Mphamvu ndi AgroSense AI Engine',
+        low: 'Patsika',
+        moderate: 'Pakatikati',
+        high: 'Pali Ngoyipa',
+    }
+};
+
+export default function RecommendationCard({ data, loading, language = 'en' }: RecommendationCardProps) {
+    const t = translations[language];
+
     if (loading) {
         return (
             <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 animate-pulse">
@@ -38,11 +64,11 @@ export default function RecommendationCard({ data, loading }: RecommendationCard
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center items-start gap-4 mb-6">
                 <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                     <Lightbulb className="w-6 h-6 text-amber-500 flex-shrink-0" />
-                    AI Farming Advisory
+                    {t.aiFarmingAdvisory}
                 </h3>
                 <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 border w-fit ${riskColors[data.risk_level]}`}>
                     {riskIcons[data.risk_level]}
-                    {data.risk_level} Risk
+                    {t[data.risk_level]} {t.risk}
                 </span>
             </div>
 
@@ -52,7 +78,7 @@ export default function RecommendationCard({ data, loading }: RecommendationCard
 
             <div className="space-y-6 flex-grow">
                 <div>
-                    <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">Key Recommendations</h4>
+                    <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">{t.keyRecommendations}</h4>
                     <ul className="space-y-3">
                         {data.recommendations.map((rec, i) => (
                             <li key={i} className="flex gap-3 text-sm text-gray-700">
@@ -67,7 +93,7 @@ export default function RecommendationCard({ data, loading }: RecommendationCard
 
                 {data.warnings.length > 0 && (
                     <div>
-                        <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">Critical Warnings</h4>
+                        <h4 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-3">{t.criticalWarnings}</h4>
                         <ul className="space-y-3">
                             {data.warnings.map((warning, i) => (
                                 <li key={i} className="flex gap-3 text-sm text-red-700 bg-red-50 p-3 rounded-xl border border-red-100">
@@ -82,7 +108,7 @@ export default function RecommendationCard({ data, loading }: RecommendationCard
 
             <div className="mt-8 pt-4 border-t border-gray-100">
                 <p className="text-[10px] text-gray-400 text-center italic">
-                    Powered by AgroSense AI Engine
+                    {t.poweredBy}
                 </p>
             </div>
         </div>
